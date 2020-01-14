@@ -1,0 +1,220 @@
+\chapter{WPF (Windows Presentation Foundation)}
+\label{chap:WPF}
+
+\section{Introduction}
+
+Typically, writing a GUI app requires at least two threads, one for handling the
+main GUI to prevent inresponsiveness for time-consuming task. This requires the
+programmers to deal with threading explicitly.
+
+Typically, WPF applications start with two threads: one for handling rendering
+and another for managing the UI.
+\begin{enumerate}
+  \item {\bf rendering thread}: effectively runs hidden in the background -
+  Sect.\ref{sec:rendering-thread}
+  
+  \item {\bf UI thread}: receives input, handles events, paints the screen, and
+  runs application code - Sect.\ref{sec:UI-thread} 
+
+Most WPF-based applications use a single UI thread, but there are still
+situations where multiple threads improve user interface (UI) responsiveness or
+application performance.
+
+
+\end{enumerate} 
+
+WPF is the latest Microsoft's approach to GUI framework to be used in .NET
+framework. A {\bf GUI framework} provides a framework for programmers to create
+an application with a wide range of GUI elements, e.g. label, textboxes, \ldots.
+This is considered a newer option compared to WinForms
+(Chap.\ref{chap:Windows.Forms}).
+
+WPF use XAML which makes it easy to create and edit the GUI
+(Sect.\ref{sec:XAML}), while the code for handling the GUI's event can be
+written in any .NET languages. To write UI using WPF, we can use
+\begin{itemize}
+  \item Microsoft Visual Studio (good for both coding and XAML editing)
+  \item Microsoft Expression Bend (for designers, part of Expression Studio),
+  with supports for gradients, template editing, animation, etc.
+  
+  Expression Bend can open solution files created by Microsoft VS
+\end{itemize}
+
+\url{https://msdn.microsoft.com/en-us/library/ms741870(v=vs.100).aspx}
+
+\subsection{UI thread}
+\label{sec:UI-thread}
+
+There is an object of class {\bf Dispatcher} that provides services for managing
+the queue of work items for a thread.
+Every UI thread must have at least one Dispatcher, and each Dispatcher can
+execute work items in exactly one thread (Sect.\ref{sec:Dispatcher_class}), it
+selects on a priority basis and runs each one to completion. 
+
+The trick to building responsive, user-friendly applications is to maximize the
+Dispatcher throughput by keeping the work items small, i.e. not taking much
+time to complete.  Any perceivable delay between input and response can
+frustrate a user.
+
+
+
+\subsection{(background) rendering thread}
+\label{sec:rendering-thread}
+
+Historically, Windows allows UI elements to be accessed only by the thread that
+created them. This means that a background thread in charge of some long-running
+task cannot update a text box when it is finished. Windows does this to ensure
+the integrity of UI components. WPF has a built-in mutual exclusion mechanism
+that enforces this coordination. 
+
+If only one thread can modify the UI, how do background threads interact with
+the user? - A background thread can ask the UI thread to perform an operation on
+its behalf. It does this by registering a work item with the Dispatcher of the
+UI thread. The Dispatcher class provides two methods for registering work items: Invoke and BeginInvoke.
+Both methods schedule a delegate for execution (NOTE: a delegate is similar to
+a function pointer in C/C++, but it is type-safe, i.e. can be checked by the
+compiler - check C\# book on how to create a delegate)
+  
+\begin{itemize}
+  \item Dispatcher.Invoke (delegate): synchronous call - doesn't
+  return until the UI thread actually finishes executing the delegate
+
+\begin{lstlisting}
+    // Place delegate on the Dispatcher.
+    this.Dispatcher.Invoke(DispatcherPriority.Normal,
+        new TimerDispatcherDelegate(TimerWorkItem));
+\end{lstlisting}    
+
+  \item Dispatcher.BeginInvoke: asynchronous call
+\end{itemize}
+
+\url{https://msdn.microsoft.com/en-us/library/system.windows.threading.dispatcher.invoke(v=vs.100).aspx}
+
+\subsection{DispatcherObject}
+\label{sec:DispatcherObject_class}
+
+Most classes in WPF derive from DispatcherObject.
+At construction, a DispatcherObject object stores a reference to the Dispatcher
+object linked to the currently running thread. So
+
+\url{https://msdn.microsoft.com/en-us/library/system.windows.threading.dispatcherobject(v=vs.100).aspx}
+
+\subsection{Dispatcher}
+\label{sec:Dispatcher_class}
+
+Once an object Dispatcher is created in a thread, it maintains a prioritized
+queue of work item for a specific thread. 
+
+If you attempt to get the CurrentDispatcher for the current thread and a
+Dispatcher is not associated with the thread, a Dispatcher will be created. A
+Dispatcher is also created when you create a DispatcherObject. If you create a
+Dispatcher on a background thread, be sure to shut down the dispatcher before
+exiting the thread.
+
+\url{https://msdn.microsoft.com/en-us/library/system.windows.threading.dispatcher(v=vs.100).aspx}
+
+\section{WPF with Visual C++}
+
+To create the user interface in WPF we use Extensible Application Markup
+Language (XAML - Sect.\ref{sec:XAML}. It's primary measuring unit is not pixel
+based, so applications display at any dpi (Resolution independence using vector graphics).
+WPF is using DirectX that can enjoy the benefits of hardware acceleration for
+smoother graphics and overall better performance.
+
+\url{http://www.bogotobogo.com/CSharp/csharp_wpf_xaml_netframework.php}
+
+\section{XAML}
+\label{sec:XAML}
+
+
+XAML is XML-based language, whose file is used to describe the GUI structures.
+XAML is for designer and thus can be split from the
+programming part (C\#, VB.NET, \ldots).
+\begin{itemize}
+  \item use hardware acceleration for drawing the GUI: better performance
+  \item UI works for both Desktop-based and Web-based (using Silverlight/XBAP)
+  \item first choice by Microsoft, which is being used in newer Visual Studio
+  tools
+\end{itemize}
+
+All measures in WPF is based on logical units, not pixels. A logical unit = 1/96
+of an inch. So, the size of each components doesn't change when you change the
+resolution of your screen. However, you can also easily build a scalable UI
+using the vector-based rendering engine.
+
+The UI is separated from the behavior (i.e. how each component reacts when user
+clicks/selects). The UI is implemented using XAML (Sect.\ref{sec:XAML}); while
+the behavior is implementd using C\# or Visual Basic.
+
+In WPF, we can virtually define any types of controls as
+content of another.
+
+Example: put an image into a button to create an image button
+\begin{verbatim}
+<Button>
+    <StackPanel Orientation="Horizontal">
+        <Image Source="speaker.png" Stretch="Uniform"/>
+        <TextBlock Text="Play Sound" />
+    </StackPanel>
+</Button>
+\end{verbatim}
+
+Example: a simple GUI, with a button and a delegate \verb!StartOrstop()! to
+handle mouse-click on the button
+\begin{verbatim}
+<Window x:Class="SDKSamples.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Prime Numbers" Width="260" Height="75"
+    >
+  <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
+    <Button Content="Start"  
+            Click="StartOrStop"
+            Name="startStopButton"
+            Margin="5,0,5,0"
+            />
+    <TextBlock Margin="10,5,0,0">Biggest Prime Found:</TextBlock>
+    <TextBlock Name="bigPrime" Margin="4,5,0,0">3</TextBlock>
+  </StackPanel>
+</Window>
+
+<Window x:Class="SDKSamples.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Prime Numbers" Width="260" Height="75"
+    >
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
+        <Button Content="Start"  
+            Click="StartOrStop"
+            Name="startStopButton"
+            Margin="5,0,5,0"
+            />
+        <TextBlock Margin="10,5,0,0">Biggest Prime Found:</TextBlock>
+        <TextBlock Name="bigPrime" Margin="4,5,0,0">3</TextBlock>
+    </StackPanel>
+</Window>
+\end{verbatim}
+
+then in the code, we need to define \verb!Window1! class in the
+\verb!SDKSamples! namespace
+\begin{lstlisting}
+namespace SDKSamples
+{
+    public partial class Window1 : Window
+    {
+    	public Window1() : base()
+        {
+            InitializeComponent();
+        }
+		private void StartOrStop(object sender, EventArgs e)
+        { // Delegate
+        }
+    }
+    
+}
+\end{lstlisting}
+\url{https://msdn.microsoft.com/en-us/library/ms741870(v=vs.100).aspx}
+
+\subsection{Delegate}
+\label{sec:Delegate}
+

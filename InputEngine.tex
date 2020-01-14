@@ -1,0 +1,39 @@
+\chapter{Input Engine}
+\label{chap:Input_Engine}
+
+Here, we describe the libraries that help us to collect inputs
+from input devices
+such as the mouse, keyboard, joystick or other game controllers.
+
+\section{DirectInput}
+\label{sec:DirectInput}
+
+It provides a system for action mapping, which allows the user to assign
+specific actions within a game to the buttons and axes of the input devices. 
+
+Microsoft recommends that new applications make use of the Windows message loop
+for keyboard and mouse input instead of DirectInput, and use XInput for Xbox 360
+console (Sect.\ref{sec:XInput}).
+
+
+DirectInput was added from DirectX 1.0 in 1995 with true support for joystick,
+i.e.
+mouse and keyboard modules simply provided wrappers to the standard Win32 API.
+
+DirectInput in DirectX 3.0 added support for keyboards and mice; it also
+improved joystick support.
+
+
+DirectInput in DirectX 5.0 (1997) included greatly improved joystick support,
+including adding force feedback, increasing the number of buttons (mouse button
+from 4 to 8), changing the underlying device-driver model and incorporating a
+COM-based API.
+
+
+
+
+\section{XInput}
+\label{sec:XInput}
+
+The new input library called XInput is specifically for the Xbox 360 controller.
+

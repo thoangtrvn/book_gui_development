@@ -1,0 +1,36 @@
+\chapter{Compositing Engines}
+\label{sec:compositing_engine}  
+
+
+A compositing engine combines visual elements from separate source into single
+images.
+All compositing involves the replacement of selected parts of an image with
+other material, usually, but not always, from another image.
+
+\url{http://en.wikipedia.org/wiki/Compositing}
+
+\section{Quartz compositor}
+\label{sec:Quartz_compositor}
+
+
+
+\section{ Desktop Window Manager}
+
+DWM is the new name for Desktop Compositing Engine or DCE.
+
+\url{http://en.wikipedia.org/wiki/Desktop_Window_Manager}
+
+
+The Desktop Window Manager is a compositing window manager.
+This means that each program has a buffer that it writes data to; DWM then
+composites each program's buffer into a final image.
+  
+  
+DWM uses DirectX 9 to perform the function of compositing and rendering in the
+GPU, freeing the CPU of the task of managing the rendering from the off-screen
+buffers to the display.
+However, applications painting to the off-screen buffers - depending on the
+technologies used for that, might still be CPU-bound.
+  
+  
+  

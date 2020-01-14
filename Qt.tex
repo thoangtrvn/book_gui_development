@@ -1,0 +1,243 @@
+\chapter{Qt}
+\label{chap:Qt}
+
+\section{History of Qt}
+
+Developing a cross-platform GUI application was unavailable at that time.
+Haavard started developing C++ GUI framework since 1988. In summer 1990, Haavard
+Nord and Eirik Chambe-Eng were working together on developing GUI for a C++
+database application for ultrasound images. The application should be able to
+run with a GUI on different platforms:
+Unix, Macintosh and Windows. They came up with an object-oriented display
+system, or a object-oriented cross-platform GUI
+framework\footnote{\url{http://www.civilnet.cn/book/embedded/GUI/Qt4/pref04.html}}.
+In 1991, Haavard started writing classes and collaborated with Eirik on the
+design. In 1992, Eirik came up with a simple but powerful GUI programming
+paradigm {\bf ``signals and slots''} (Sect.\ref{sec:signal_and_slot}) and
+Haavard hand-coded it. In 1993, they completed their Qt's first graphics kernel,
+which allows them to build their own widgets. 'Q' was chosen as the classes
+prefixes because the letter tool beautiful in Haavard's Emacs font, and 't' =
+toolkit (inspired by Xt or X toolkit).
+
+In 1994, the company was first established under the name {\it Quasar
+Technologies}, and then renamed as Trolltech; with Haavard Nord (Trolltech's
+CEO) and Eirik Chambe-Eng (Trolltech's president). The first public release was
+Qt 0.90 on May, 1995. \textcolor{red}{Qt offered the same APIs on both Windows
+and Linux}.
+
+KDE project was established in 1996 by Matthias Ettrich who decided to use Qt to
+build KDE helped Qt became the de-facto standard in C++ GUI development on
+Linux. Matthias joined Trolltech in 1998. Qt 2.0 was released in 1999 with a new
+open-source license.
+
+By the end 2000, Trolltech released {\bf Qtopia Core}, a platform for
+applications to run on embedded devices with its own windows system as a
+replacement for X11. Also, the UNIX version of Qt was made available under GPU
+LGPL.
+
+Qt 3.0 was released in 2001, with support for Windows, Mac OS X, Unix and Linux
+(desktop and embedded), giving 42 different classes. \textcolor{red}{New
+features are Unicode support and improved locale, a Perl-like regular expression
+class, new text viewing and editing widget}.
+
+Qt 4.0 was released in 2005, with about \textcolor{red}{500 classes, more than
+9000 functions}.
+Due to its large size and wide-range of features, it was splitted into different
+libraries so that developers need only to link to what they need. The major
+changes are: completely new set of efficient and easy-to-use template
+containers, advanced model/view, fast and flexible 2D painting framework,
+powerful Unicode text viewing and editing classes. For the first time, Qt have
+two versions: commercial and open-source development on all platforms that it
+supports.
+
+In 2008, Trolltech was then acquired by Nokia with the new name Qt Software, and
+Qtopia was renamed to {\bf Qt Extended}, targeting to commercial support.  An
+agreement between Nokia and KDE in that Nokia is obliged to continue the
+development of Qt and provide it as free
+software\footnote{\url{http://www.itworld.com/mobile-wireless/289651/alternate-history-kde}}.
+In 2009, Qt Software was renamed to Qt Development Framework; and Qt Extended
+was discontinued with latest version 4.4.3. The open-source community took it
+over with the new name {\bf Qt Extended Improved}, with latest version 4.5.2 in
+June 2009.
+
+Since Qt 4.5, Qt was made available under LGPL version 2.1 license, making it
+available for commercial products to use the open-source version of Qt. In 2011,
+Qt Development Framework was then sold to Digia PLC.
+In Sep 2012, the latest stable release was Qt 4.8.3; and Qt 5.0 beta was
+released on Aug, 2012; and Qt 5.0 final to be released on Nov 2012. Qt 5.0
+offers full capability of OpenGL/OpenGL ES graphics acceleration.
+
+
+\section{Qt 5}
+
+On a VNC session, we can test if Qt5 is working by running
+\begin{verbatim}
+python3
+
+>>> from PyQt5 import QtWidgets
+>>> qapp = QtWidgets.QApplication([''])
+
+
+QXcbConnection: Failed to initialize XRandr
+Qt: XKEYBOARD extension not present on the X server.
+\end{verbatim}
+Xrandr - Sect.\ref{sec:Xrandr}
+
+\subsection{Xrandr}
+\label{sec:Xrandr}
+
+\begin{verbatim}
+typedef struct {
+     int type;               /* event base */
+     unsigned long serial;   /* # of last request processed by server */
+     Bool send_event;        /* true if this came from a SendEvent request */
+     Display *display;              /* Display the event was read from */
+     Window window;          /* window which selected for this event */
+     int subtype;            /* RRNotify_ subtype */
+} XRRNotifyEvent;
+\end{verbatim}
+
+
+
+\url{https://sourcecodebrowser.com/libxrandr/1.2.3/_xrandr_8h_source.html}
+
+\subsection{EGLFS}
+\label{sec:EGLFS}
+
+Since the Qt 5.0 release, Qt no longer contains its own window system (QWS)
+implementation. There are multiple platform plugins that are potentially usable
+on Embedded Linux systems: EGLFS, LinuxFB, KMS, DirectFB, Wayland. 
+
+EGLFS is a platform plugin for running Qt5 applications on top of EGL and OpenGL
+ES 2.0 without an actual windowing system (like X11 or Wayland)
+
+\subsection{Troubleshoot: cross-compile}
+
+\begin{verbatim}
+./configure -release -opengl es2 -device linux-rasp-pi2-g++ -device-option
+CROSS_COMPILE=$TOOLCHAIN/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf- -sysroot $ROOTFS -prefix /usr/local/qt5
+\end{verbatim}
+
+
+\subsection{Troubleshoot: QXcbConnection, XKEYBOARD}
+
+On Linux, the xcb QPA (Qt Platform Abstraction) platform plugin is used. It
+provides the basic functionality needed by Qt GUI and Qt Widgets to run against
+X11. It seems that vncserver (which is also a trimmed version of X11
+server) doesn't provide many of the X extensions in the free version.
+
+\begin{itemize}
+  \item  Qt5.6:\url{http://doc.qt.io/qt-5.6/linux-requirements.html}
+
+  \item Latest Qt 5.9: \url{http://doc.qt.io/qt-5/linux-requirements.html}
+\end{itemize}
+
+It's best to compile Qt yourself, using \verb!-qt-xcb! so that it statiscally
+link against these X11 extension library instead of trying to link against
+the system versions.  This can help make Qt less dependent on some of the xcb
+helper libraries that might not be available on all distributions. On Ubuntu,
+install these packages
+\begin{verbatim}
+sudo apt-get install libfontconfig1-dev libfreetype6-dev libx11-dev \
+libxext-dev libxfixes-dev libxi-dev libxrender-dev \
+libxcb1-dev libx11-xcb-dev libxcb-glx0-dev
+\end{verbatim}
+Build option \url{http://doc.qt.io/qt-5/configure-options.html}
+\begin{verbatim}
+./configure --prefix=/packages/qt/5.6 -qt-xcb -qt-zlib -qt-libjpeg -qt-libpng
+-qt-xkbcommon -qt-freetype -qt-pcre -qt-harfbuzz
+\end{verbatim}
+
+
+Check the output of the command:
+\begin{verbatim}
+xprop -root | grep -i xkb
+
+// on Mac
+_XKB_RULES_NAMES(STRING) = "base", "empty", "empty", "", ""
+
+// on Linux
+CUT_BUFFER0(STRING) = "xprop -root | grep -i xkb "
+\end{verbatim}
+
+There are several ways how Qt can obtain a keymap information from the X server,
+I would recommend to compile Qt applications with xcb-xkb support,
+\begin{verbatim}
+1) use xkb_x11_* API (from libxkbcommon)
+2) if Qt is compiled with Xlib support then use Xlib + xkbfile calls
+3) read _XKB_RULES_NAMES property
+\end{verbatim}
+
+Check xrandr
+\begin{verbatim}
+xrandr -q
+
+ SZ:    Pixels          Physical       Refresh
+*0   1800 x 1024   ( 457mm x 260mm )  *60  
+Current rotation - normal
+Current reflection - none
+Rotations possible - normal 
+Reflections possible - none
+\end{verbatim}
+
+\subsection{Qt 5.6}
+
+
+\url{https://download.qt.io/archive/qt/5.6/5.6.0/}
+
+
+\section{signal and slot}
+\label{sec:signal_and_slot}
+
+Qt defines an extension to C++ language and thus need to be handled by a special
+compiler called {\bf MOC} (Meta-Object Compiler- Sect.\ref{sec:MOC}).
+
+\url{http://qt-project.org/doc/qt-4.8/signalsandslots.html}
+
+
+Slots are just regular methods. Nothing special there, EXCEPT moc will save
+their signature in a table in the intermediate .moc file - you can see this
+table quite clearly when you look through this file.
+
+This table allows you to call a method using it's signature.
+
+The SLOT(mySlot(int)) macro boils down to a string representation of the method
+in question. There are several ways you can do this, see the documentation for
+QMetaObject for example.
+
+When a you connect a signal to a slot, the signal and slot signatures are stored
+for later use. When a signal is emitted, all the slots previously connected to
+that signal are called using the method described above.
+
+There are 2 types of connection there. First one: slots are called at the time
+signal was emitted. And the second one: slots calls are placed in event loop
+queue. You can manually select the method in connect, but connecting signal and
+slots from different threads are always queued
+
+
+\section{MOC (Meta-Object Compiler)}
+\label{sec:MOC}
+
+Meta-Object Compiler (MOC) handles Qt's C++ extension.
+It reads Qt codes and convert the Qt's macros in C++ header file to C++ source
+file containing the meta-object code for these classes. The source file
+extension is \verb!*.moc!
+
+Qt codes extensively use macros like \verb!Q_OBJECT!.
+Qt creates "meta object code" based on "annotations" in your c++ code (eg
+\verb!Q_PROPERTY!, \verb!Q_SLOTS! etc).
+
+
+\url{http://qt-project.org/doc/qt-4.8/moc.html}
+
+\subsection{Meta-object code}
+
+Meta objects enhance programming languages by creating new or manipulate
+existing objects. They provide functionalities a language does not actually have
+by itself.
+
+The Meta Objects are interpreted either by compile time or run time. In Qt and
+C++ it is done during compile time by the Meta Object Compiler (moc) -
+Sect.\ref{sec:MOC}). An example case is the usage of the signal/slot concept
+(Sect.\ref{sec:signal_and_slot}).
+

@@ -1,0 +1,42 @@
+\chapter{Desktop App Development}
+
+Traditionally, we use widgets, with APIs provided via C/C++ or Java binding to
+write GUI Desktop apps. Nowadays, with the advancement of browsers and mobile
+devices, it is shifting to writing mobile and web applications (using
+JavaScript), that can run as a regular desktop apps. 
+
+The main idea behind developing desktop applications with JavaScript is that you
+build one codebase and package it for each operating system separately, i.e.
+write once run everywhere (via the webbrowser). Nowadays, developing a desktop
+application with JavaScript relies on either Electron or NW.js.
+
+\section{Using Javascript}
+
+NW.js, Electron provides a platform to write desktop applications with
+JavaScript and HTML and has Node integration to grant access to the low level
+system from web pages. 
+
+\section{-- NW.js (previously: node-webkit)}
+
+Roger Wang, of Intel's Open Source Technology Center, created \verb!node-webkit!
+in 2011. This allowed the user to spawn a WebKit browser window and use Node.js
+modules within \verb!<script>! tags.
+
+Soon, it was switched from WebKit to Chromium (the open-source project Google
+Chrome is based on), and an intern named Cheng Zhao joined the project. It was
+soon realized that an app runtime based on Node.js (Sect.\ref{sec:Node.js}) and
+Chromium would make a nice framework for building desktop apps.
+
+\begin{mdframed}
+node-webkit was later renamed NW.js to make it a bit more generic because it no
+longer used Node.js or WebKit.
+
+NW.js is based on io.js (the Node.js fork) at the time, and Chromium had moved
+on from WebKit to its own fork, Blink.
+
+\end{mdframed}
+
+\section{-- Electron (previously: Atom Shell)}
+
+Electron was previously named Atom Shell.
+

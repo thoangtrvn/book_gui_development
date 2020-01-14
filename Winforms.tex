@@ -1,0 +1,641 @@
+\chapter{Windows.Forms}
+\label{chap:Windows.Forms}
+
+Platforms: Windows, Unix, OSX.
+
+Microsoft's \verb!System.Windows.Forms! (aka Managed.Windows.Forms, MWF,
+Winforms) is a binding developed by Microsoft to the Win32 toolkit. It is 
+ a popular toolkit used by millions of Windows developers (especially for
+internal enterprise applications).
+
+The Mono project decided to produce a compatible implementation (Winforms) to
+allow these developers to easily port their applications to run on Linux and other Mono platforms.   
+Mono's System.Windows.Forms ({\bf MWF}) is implemented using
+\verb!System.Drawing!.
+All controls are natively drawn through System.Drawing.
+System.Windows.Forms implements its own driver interface to communicate with the
+host OS windowing system. The available driver interfaces supports X11, Win32,
+OSX.
+
+Most of the Windows.Forms API will work on Mono, however some applications (and
+especially third party controls) occasionally bypass the API and P/Invoke
+straight to the Win32 API. These calls will likely have to changed to work on
+Mono.  
+
+In general, Winforms applications are written using Microsoft's Visual Studio or
+SharpDevelop, which both provide a visual designer for creating Winforms GUIs.
+As WinForms is designed for Desktop-based applications; many people are shifting
+to using WPF which is designed to be both Desktop-based and Web-based friendly
+(Chap.\ref{chap:WPF}). However, at the moment, WinForms has more supported GUI
+elements; while with WPF you may need to buy third-party packages.
+
+\section{Windows Form with C++/CLI}
+
+Before Visual Studio 2012
+\begin{verbatim}
+File/New/Project...
+    Visual C++ (project types)
+       CLR
+          Windows Forms Application (Templates)
+\end{verbatim}
+
+According to the VC++ team, the primary intent of C++/CLI was to provide for
+great interop solutions, and not another full-featured .NET language. So if
+you're looking to build a new .NET based desktop apps, C\# or VB.NET are the
+recommended choices going forward.  So, since Visual Studio 2012, this feature
+is removed from the Wizzard.
+\url{https://social.msdn.microsoft.com/Forums/vstudio/en-US/2acadc0f-33b6-43e2-aff7-52654cc48ab8/how-to-create-windows-forms-application-in-vs-c-2013-rc?forum=vcgeneral}
+
+However, we still can create a Winforms application using C++/CLI, from Visual
+Studio 2012
+\begin{verbatim}
+File/New/Project...
+    Visual C++ (project types)
+       CLR
+          CLR Empty Project	
+\end{verbatim}
+Suppose you name the project is CUDAFLuxGUI.
+
+Then Project/Add New Item\ldots
+\begin{verbatim}
+Visual C++
+   UI
+     Windows Form
+\end{verbatim}
+and create a new form name (e.g. MainForm.h), then edit \verb!MainForm.cpp!. In
+the code (NOTE: You can also copy the form designed in C\# project; however
+partial class is not supported here).
+
+\begin{verbatim}
+#include "MainForm.h"
+
+using namespace System;
+using namespace System::Windows::Forms;
+
+[STAThread]
+void main(array<String^>^ arg) 
+{
+   Application::EnableVisualStyles();
+   Application::SetCompatibleTextRenderingDefault(false);
+   
+   //Create the form instance
+   CUDAFluxGUI::MainForm form;
+   
+   Application::Run(%form);
+
+}
+\end{verbatim}
+The System namespace provides functions to work with UI controls. Then,
+right-click on the project, get \verb!Properties! window
+\begin{verbatim}
+Configuration Properties
+    Linker
+        System
+\end{verbatim}
+select  Windows (/SUBSYSTEM:WINDOWS) for SubSystem. If you don't see
+\verb!SubSystem!, make sure you change the configuration setting from Win32 to
+x64. (See Sect.\ref{sec:configuration-properties_Linker_subsystem} in
+Visual C++ chapter in C/C++ manual book)
+
+\begin{verbatim}
+Advanced
+   Entry point
+\end{verbatim}
+type in \verb!Main!; then hit OK button. 
+
+IMPORTANT: Make sure the above settings are set for both Debug and Release
+configuration.
+
+Finally, hit F5 to test the program.
+
+\url{http://www.bogotobogo.com/cplusplus/application_visual_studio_2013.php}
+
+
+If you check the \verb!MainForm.h! file, it has
+\begin{verbatim}
+#pragma once
+
+namespace CUDAFluxGUI {
+
+	using namespace System;
+	using namespace System::ComponentModel;
+	using namespace System::Collections;
+	using namespace System::Windows::Forms;
+	using namespace System::Data;
+	using namespace System::Drawing;
+
+	/// 
+
+	/// Summary for MyForm
+	/// 
+
+	public ref class MainForm : public System::Windows::Forms::Form
+	{
+	public:
+		MainForm(void)
+		{
+			InitializeComponent();
+			//
+			//TODO: Add the constructor code here
+			//
+		}
+        ...
+
+\end{verbatim}
+
+Explain:
+\begin{itemize}
+  \item \verb!#pragma once! : it means only open this file once during the
+  compilation. \verb!System! namespace gives us functions to deal with UI
+  controls.
+  \item a class name \verb!MainFrom! is derived from the Windows Form
+  \verb!Form! base class.
+\end{itemize}
+
+
+
+To deploy the system, create another project 
+\begin{verbatim}
+Installed
+   InstallShielf Limit ... Setup and Deployment
+\end{verbatim}
+and name it \verb!Setup_CUDAFluxGUI!. From the Project Assistant window, we
+setup the properties of the installation. 
+
+\section{Windows Form with .NET language (C\#)}
+
+\section{Form class}
+\label{sec:Form-class}
+
+\begin{verbatim}
+System.Windows.Forms.Form 
+\end{verbatim}
+Represents a window or dialog box that makes up an application's user interface.
+The main windows of an application is a derivative of this class.
+
+\url{http://msdn.microsoft.com/en-us/library/system.windows.forms.form(v=vs.110).aspx}
+
+\begin{verbatim}
+namespace CUDAFluxGUI
+{
+    public partial class MainForm : Form
+    {
+    	// (private) data members
+    	
+    	// constructor
+    	public MainForm() : base()
+    	{
+    	  // do GUI setting
+    	  // initialize data members
+    	}
+    }
+}
+\end{verbatim}
+
+You have the option to create MDI application (multiple-document interface),
+that allows you to open multiple files, and a Windows menu to switching from one
+document to another.
+\url{http://msdn.microsoft.com/en-us/library/xyhh2e7e(v=vs.110).aspx}
+
+\section{Application class (sealed)}
+\label{sec:Winforms.Application}
+
+\begin{verbatim}
+System.Windows.Forms.Application
+\end{verbatim}
+class is an important class, it contains \verb!static! method that can be used
+to control the GUI of the application and other tasks (e.g. start/stop the
+application).
+
+Example: below is the core functional calls in the Main() method
+\begin{verbatim}
+using System.Windows.Forms;
+
+public class Form1 : System.Windows.Forms.Form
+{
+
+[STAThread]
+static void Main() 
+{
+// the first line in Main() method
+   Application.EnableVisualStyles();
+
+// to use GDI based TextRenderer class for text rendering
+   Applications.SetCompatibleTextRenderingDefault(false);
+
+// Add the event handler for handling UI thread exceptions to the event.
+   Application.ThreadException += new
+      ThreadExceptionEventHandler(ErrorHandlerForm.Form1_UIThreadException);
+    
+    
+   Application.Run(new Form1());
+}
+
+public Form1()
+{
+ //UI components here
+}
+\end{verbatim}
+The \verb!Run()! method start the application message loop on the current
+thread, and (optionally) make the form visible.
+\begin{verbatim}
+Application.Run() 	// without a form
+
+Application.Run(new Form1()) // make the form visible
+\end{verbatim}
+
+\url{http://msdn.microsoft.com/en-us/library/system.windows.forms.application(v=vs.110).aspx}
+
+
+\section{Colors}
+
+
+\begin{verbatim}
+System.Drawing.Color class
+
+System.Drawing.SystemColors class
+\end{verbatim}
+
+Example:
+\begin{verbatim}
+Color toolStripMenuItemSelectedColor = Color.FromArgb(194, 224, 255);
+Color toolStripMenuItemUnSelectedColor = SystemColors.Control;
+\end{verbatim}
+
+\section{Menu}
+
+\begin{verbatim}
+System.Windows.Forms.Menu
+  System.Windows.Forms.MainMenu  //the class is replaced by 
+                                   MenuStrip  (.NET 2.0+)
+  
+System.Windows.Forms.Menu
+  System.Windows.Forms.ContextMenu  // the class is replaced by
+                                      ContextMenuStrip (.NET 2.0+)
+        
+  
+System.Windows.Forms.Control
+  System.Windows.Forms.ScrollableControl
+    System.Windows.Forms.ToolStrip
+      System.Windows.Forms.MenuStrip   // represent a menu system for a
+                                        Form (or it derivative class)
+            
+
+System.Windows.Forms.Control
+  System.Windows.Forms.ScrollableControl
+    System.Windows.Forms.ToolStrip
+      System.Windows.Forms.ToolStripDropDown
+        System.Windows.Forms.ToolStripDropDownMenu
+          System.Windows.Forms.ContextMenuStrip   // represent a shortcut menu                                   
+\end{verbatim}
+
+\section{Menu Item}
+
+\begin{verbatim}
+System.Windows.Forms.Menu
+  System.Windows.Forms.MenuItem  // a single menu item displayed on
+                            MainMenu or ContextMenu 
+                           the class is replaced by ToolStripMenuItem
+
+
+      System.Windows.Forms.ToolStripItem
+        System.Windows.Forms.ToolStripDropDownItem
+          System.Windows.Forms.ToolStripMenuItem  // a selectable menu item on
+                                                    MenuStrip or
+                                                    ContextMenuStrip
+\end{verbatim}
+
+\section{SplitContainer}
+
+SplitContainer class represents a UI control with two sides, and a movable
+splitter, which can be configured horizontal spliter or vertical splitter.
+
+
+\section{Helloworld app}
+
+
+The programs has the main file (MainForm.cs) with the minimal included headers
+\begin{Verbatim}
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+\end{Verbatim}
+
+\begin{mdframed}
+This is in Mono
+
+\begin{verbatim}
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+\end{verbatim}
+
+\end{mdframed}
+
+Next step: put the main class inside a namespace. The name of the namespace is
+typically the name of the application
+\begin{Verbatim}
+namespace CUDAFluxGUI
+{
+   //put the main GUI class here (e.g. CUDAFluxGUI class)
+
+}
+\end{Verbatim}
+
+The main class is defined here
+\begin{enumerate}
+  \item it is a partial class of the \verb!Form! class
+  (Sect.\ref{sec:Form-class})
+  \item A public constructor also need to call the default constructor of
+  \verb!Form! class.
+  
+\begin{Verbatim}
+public MainForm()
+     : base()
+ {
+\end{Verbatim}
+   and call automatic methods that should not be modified
+\begin{verbatim}
+     InitializeComponent();
+     WindowState = FormWindowState.Maximized;     
+}
+\end{verbatim}
+
+
+\end{enumerate}
+
+\begin{Verbatim}
+//public partial class HelloWorld : Form
+public partial class MainForm : Form
+    {
+        ///
+
+        /// Main constructor for HelloWorld Form
+        /// 
+
+
+        public HelloWorld()
+        {
+            // initialize the designer standard components
+            InitializeComponent();
+
+            // make sure that this window is maximized
+            WindowState = FormWindowState.Maximized;
+        }
+
+        ///
+
+        /// Called when the form is first loaded.  Resize the HelloWorldLabel to fit the new form size
+        /// 
+
+
+        ///
+Ignored
+        ///
+Ignored
+        private void HelloWorld_Load(object sender, EventArgs e)
+        {
+            ResizeHelloWorld();
+        }
+
+        ///
+
+        /// Called when the form is resized.  Resize the HelloWorldLabel to fit the new form size
+        /// 
+
+
+        ///
+
+        ///
+
+        private void HelloWorld_Resize(object sender, EventArgs e)
+        {
+            ResizeHelloWorld();
+        }
+
+        ///
+
+        /// Resize the Hello World to fill the client area
+        /// 
+
+
+        void ResizeHelloWorld()
+        {
+            // change the font to match the size of the client area
+            HelloWorldLabel.Font = GetBestFontFit(ClientSize, HelloWorldLabel.Font, HelloWorldLabel.Text, ClientSize.Height, 8f); ;
+
+            // center the label
+            CenterHelloWorld();
+        }
+
+        ///
+
+        /// Center the HelloWorldLabel in the client area of HelloWorld form
+        /// 
+
+
+        void CenterHelloWorld()
+        {
+            HelloWorldLabel.Location = new Point((ClientSize.Width / 2) - (HelloWorldLabel.Width / 2), (ClientSize.Height / 2) - (HelloWorldLabel.Height / 2));
+        }
+
+        ///
+
+        /// Determine the best font match for the size/text.  The result should be between the maximum and minimum height.
+        /// The size is the area to fill.  The new font is based on the old font which is passed in.
+        /// 
+
+
+        /// Font
+        public static Font GetBestFontFit(Size size, Font currFont, String text, float fontMax, float fontMin)
+        {
+            float fontPixels = fontMax;
+            float minfontPixels = fontMin;
+
+            // find the corresponding font size for the textbox size
+            Font font = currFont;
+
+            // make sure that the text is not null or empty before attempting to fit it in the area.
+            // if it is null or empty, the current font is used since it does not matter.
+            if (!String.IsNullOrEmpty(text))
+            {
+                Size textsize;
+
+                font = new Font(currFont.FontFamily, fontPixels, currFont.Style, GraphicsUnit.Pixel);
+
+                textsize = TextRenderer.MeasureText(text, font);
+
+                // Check to see if the font fits in the area and if not, find a smaller one
+                while ((((textsize.Height) > size.Height) || ((textsize.Width) > size.Width)) && (fontPixels > minfontPixels))
+                {
+                    // try to speed up the process of finding the right font size by detecting how much it is too big by
+                    if (textsize.Height > size.Height)
+                    {
+                        // reduce the fontPixels based on how far off the font size is
+                        fontPixels -= (textsize.Height - size.Height);
+                    }
+                    else if (textsize.Width > size.Width)
+                    {
+                        int charPixelWidth = textsize.Width / text.Length;
+                        int targetPixelWidth = size.Width / text.Length;
+
+                        // if the characters are too wide, reduce the fontPixels by how different the result is from the desired width
+                        if (charPixelWidth > targetPixelWidth)
+                        {
+                            fontPixels -= (charPixelWidth - targetPixelWidth);
+                        }
+                        else
+                        {
+                            fontPixels -= 1.0F;
+                        }
+                    }
+                    else
+                    {
+                        fontPixels -= 1.0F;
+                    }
+
+                    // drop the old one since it did not work
+                    font.Dispose();
+
+                    // get a new font based on the smaller font pixels size
+                    font = new Font(font.FontFamily, fontPixels, font.Style, GraphicsUnit.Pixel);
+
+                    // recalculate the size based on the new font
+                    textsize = TextRenderer.MeasureText(text, font);
+                }
+            }
+
+            // when all done, return the font to use
+            return (font);
+        }
+
+    }
+}
+\end{Verbatim}
+
+\section{UI Data binding}
+\label{sec:UI-data-binding-WinForms}
+
+Classically, data binding was used within applications to take advantage of data
+stored in databases. Windows Forms data binding allows you to access data from
+databases as well as data in other structures, such as arrays and collections
+(assuming certain minimum requirements have been met). 
+
+In Windows Forms, you can bind a UI control to a wide variety of structures,
+from simple (arrays) to complex (data rows, data views, and so on). As a
+minimum, a bindable structure must support the \verb!IList! interface.
+
+
+ To do a simple data binding, e.g. a column value from a dataset table is
+displayed in the Windows Form control, we first need to know which data
+source we want to connect
+\begin{enumerate}
+  \item database: MS SQL Server ( .xsd file - a typed dataset)
+  
+  \item web service: data and method of a WCF service, WCF Data Services or a
+  Web service (the type of the returned objects can be varied)
+  
+  \item objects: work with data in existing objects (the object can be located
+  in the project, or you need a reference (add a reference) to the selected
+  object first before it shows up in the wizard)
+  
+  \item SharePoint: data from a SharePoint site
+  
+\end{enumerate}
+
+A connection object need to be created for the UI form or
+component. In Visual Studio, it is typically created as the result of using a
+data wizard (Data Source Configuration Wizard)
+\footnote{\url{http://msdn.microsoft.com/en-us/library/w4dd7z6t.aspx}} or
+dragging data objects onto the form.
+
+Run Data Source Configuration Wizard using either
+\begin{enumerate}
+  \item Project / Add New Data Source
+  \item Data Source Window choose Add New Data Source
+  \item From the property of the bindable controls, select Add New Data Source
+  command
+\end{enumerate}
+
+
+
+Once you added the database/data source, you choose {\bf Database Model} to
+generate a dataset or EDM (Entity Data Model)
+\begin{enumerate}
+  \item ADO.NET: \url{http://msdn.microsoft.com/en-us/library/aa984058.aspx}
+   \item ASP.NET : \url{http://msdn.microsoft.com/en-us/library/6759sth4.aspx}
+\end{enumerate}
+
+Next, choose your data connection
+\begin{itemize}
+  \item Choose an existing connection (from the list of connections) or create a
+  new one (click {\it New Connection})
+  \item Set values in {\it Connection Properties} dialog box
+  \item read-only information is displayed in {\it Connection Properties} dialog
+  box
+\end{itemize}
+
+Finally, save the {\bf Connection String} to the App. Configuration file. Type a
+name for the connection or use the provided default name. If the database
+connection changes, you can modify the connection string in the application
+configuration file instead of editing the source code and recompiling your
+application. How to edit a connection string
+\url{http://msdn.microsoft.com/en-us/library/ms171887.aspx}
+
+Look at {\bf Data Sources} window, once the datasource is available,
+\footnote{\url{http://msdn.microsoft.com/en-us/library/6ckyxa83.aspx}} then you
+can create data-bound controls (i.e. a control that bind to data) by dragging
+the data source to a design surface
+\url{http://msdn.microsoft.com/en-us/library/w4dd7z6t.aspx}
+
+\begin{mdframed}
+In some situations, it's convenient to create a connection object without the
+assistance of any data design tools. E.g.: to create an ADO.NET
+programmatically, see
+\url{http://msdn.microsoft.com/en-us/library/32c5dh3b.aspx}
+\end{mdframed}
+
+  
+
+
+\url{http://msdn.microsoft.com/en-us/library/aa984214.aspx}
+
+
+\section{Text rendering: GDI vs. GDI+}
+\label{sec:text_rendering}
+
+Some new UI controls use GDI based \verb!TextRenderer! class to do text
+rendering; the old one use GDI+ based \verb!Graphics! class. This is the change
+made from .NET Framework 2.0 to resolve problems in performance
+and localization in GDI+. GDI calculates character spacing and word wrapping
+differently from GDI+, which can cause text for controls that use
+\verb!TextRenderer! looks different from text rendered by \verb!Graphics! class.
+To resolve this incompatibility, you can set the UseCompatibleTextRendering
+property to true.  
+
+In most cases, if your application is not being upgraded from .NET Framework
+1.0 or .NET Framework 1.1, it is recommended that you leave
+UseCompatibleTextRendering set to the default value of false. 
+
+We use
+\begin{verbatim}
+using Systems.Windows.Forms;
+
+Application.EnableVisualStyles();
+ // to use GDI based TextRenderer class for text rendering
+Applications.SetCompatibleTextRenderingDefault(false);
+
+
+Application.Run(new Form1());
+\end{verbatim}
+See Sect.\ref{sec:Winforms.Application}
+
+IMPORTANT: You should never call this method if your Windows Forms code is
+hosted in another application, such as Internet Explorer. Only call this method
+in stand-alone Windows Forms applications. 
+\url{http://msdn.microsoft.com/en-us/library/system.windows.forms.application.setcompatibletextrenderingdefault(v=vs.110).aspx}

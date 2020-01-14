@@ -1,0 +1,143 @@
+\chapter{GTK+}
+\label{chap:GTK+}
+
+\section{GIMP (GTK)}
+\label{sec:GTK}
+
+GIMP is released under LGPLv3 and GPLv3+. GIMP is an open-source raster image
+editor: image retouching, editing, free-form drawing, resizing, cropping,
+photo-montages, converting between different image formats, etc.
+
+The GUI tookit for GIMP is called GTK ({\bf GIMP ToolKit}), which was developed
+in parallel to facilitate the development of GIMP software.
+
+Since GIMP 0.6, GTK was designed to replace Motif GUI toolkit
+(Chap.\ref{chap:Motif}), i.e. giving prettier look. Since GIMP 0.99, GTK+ was
+used (Sect.\ref{sec:GTK+}).
+
+Applications that use GTK: OpenOffice, Firefox, Gaim, GIMP.
+
+There are different wrappers
+\begin{enumerate}
+  \item GTKmm - Sect.\ref{sec:GTKmm}
+  \item GTK+ - Sect.\ref{sec:GTK+}
+  \item GTK\# - Sect.\ref{chap:GTKsharp}
+\end{enumerate}
+
+\section{GTKmm}
+\label{sec:GTKmm}
+
+GTKmm is the C++ wrapper for GTK (Sect.\ref{sec:GTK}).
+
+\section{GTK+}
+\label{sec:GTK+}
+
+GTK+ was designed to replace GTK (Sect.\ref{sec:GTK}) in GIMP 0.99.
+Cario is a 2D graphic library (Sect.\ref{sec:cairo}), and GTK+ uses it to render
+widgets. Cario is low-level.
+
+In the future, it's entirely possible that GTK+ will use Clutter
+(Sect.\ref{sec:Clutter}) internally as the base for its widgets - though that's
+still a work in progress.
+\begin{verbatim}
+  GPU <- [ [ Cogl + Cairo ] <- [ GDK + Clutter ] <- GTK+ ] <- application
+\end{verbatim}
+\url{https://lwn.net/Articles/608501/}
+
+\begin{mdframed}
+
+If you are an app developer you might use GTK+ to create the window, menus,
+toolbars, etc and use clutter to draw any app content that is "drawing area
+like" and doesn't fit into the widget-based app metaphor. Within Clutter, you
+may dig down to Cairo for specific drawing tasks.
+
+\end{mdframed}
+
+GTK+ was designed using object-oriented programming approach based on the
+base object called GObject (Sect.\ref{sec:GObject}).
+
+Compared to Motif, GTK+ has a much more advanced object system than Motif. This
+is a strong point for GTK+ that make it easier to program.
+Another advantage of GTK+ compared to Motif is that GTK+ can easily change
+themes. That is, one can devise different look and feels for a GTK+ program by
+just changing simple configurations.
+
+GTK+ integrates better with other libraries written for UNIX. Due to its modular
+nature, GTK+ can be updated more easily.
+\url{http://in4mationflow.com/Prog/Gtk/Gtk-in-Comparison-with-Motif} 
+
+\subsection{check version}
+
+\begin{verbatim}
+dpkg -l libgtk* | grep -e '^i' | grep -e 'libgtk-*[0-9]'
+
+apt-cache policy libgtk2.0-0 libgtk-3-0 
+\end{verbatim}
+list all the libgtk packages, including -dev ones, that are on your system.
+
+Check GTK+ 1.x
+\begin{verbatim}
+pkg-config --modversion gtk+
+\end{verbatim}
+
+
+Check GTK+ 2.x
+\begin{verbatim}
+pkg-config --modversion gtk+-2.0
+\end{verbatim}
+
+Check GTK+ 3.x
+\begin{verbatim}
+pkg-config --modversion gtk+-3.0
+\end{verbatim}
+\url{http://stackoverflow.com/questions/126141/how-do-you-find-out-which-version-of-gtk-is-installed-on-ubuntu}
+
+
+
+\subsection{install}
+
+You can run GTK+ apps on KDE (just like you can run Qt apps under Gnome) as long
+as you have the appropriate libraries installed. Gnome is the desktop
+"environment" and a development platform, individual applications can use
+whatever toolkit they like (though it's true that using GTK+ makes interaction
+with other Gnome applications easier).
+
+However, some GTK+ apps use components/utilities from the GNOME desktop
+environment. To get your GTK+ app to run, you may have to install components
+from GNOME. It is recommended to install GNOME
+Shell (Sect.\ref{sec:GNOME-Shell}).
+\url{https://stackoverflow.com/questions/3339828/is-it-possible-to-run-gtk-apps-without-gnome-or-the-likes}
+
+
+GTK+3.12 comes with Gnome3.12 (Sect.\ref{sec:GNOME-3.12}). To install GTK+3.12
+on Ubuntu 14.04
+\url{http://www.webupd8.org/2014/05/how-to-install-gnome-312-in-ubuntu.html}
+
+
+To install the latest version of GTK+
+\begin{verbatim}
+sudo add-apt-repository ppa:gnome3-team/gnome3
+sudo add-apt-repository ppa:gnome3-team/gnome3-staging
+\end{verbatim}
+
+ \subsection{GTK+ 2.0}
+ 
+ \subsection{-- GTK+ 2.8}
+ \label{sec:GTK+-2.8}
+ 
+GTK+ 2.8 (2005) began the transition to using Cairo (Sect.\ref{sec:cairo}) to
+render the majority of its graphical control elements.
+ 
+ \subsection{GTK+ 3.0}
+
+Since GTK+ 3.0 (2005), all graphical control elements are rendered using
+Cairo (Sect.\ref{sec:cairo}).
+ 
+GTK+ 3.13.3 contains 203 active and 37 deprecated widgets.
+
+\subsection{Popover widget}
+\label{sec:Popover-widget}
+
+Popover was a new widget added in 3.12, which is what gotk3 currently targets
+with the default build
+

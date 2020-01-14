@@ -1,0 +1,26 @@
+\chapter{Multi-language support}
+
+\section{gettext}
+\label{sec:gettext}
+
+Download:
+ \url{http://ftp.gnu.org/pub/gnu/gettext/gettext-0.19.8.tar.gz}
+
+
+Gettext is a system for writing multilingual program on Unix-like OS. GNU
+gettext is one implementation of {\bf gettext}, released in 1995.
+\begin{itemize}
+  \item Ubuntu 14.04: gettext 0.18.3
+\end{itemize}
+
+In C, the function \verb!gettext()! function; whose aliases is \verb!_!
+\begin{verbatim}
+printf(gettext("My name is %s.\n"), my_name);
+printf(_("My name is %s.\n"), my_name);
+\end{verbatim}
+
+For comments, to make it should be translated as well, the comment line starts
+with three dashses (///). 
+
+\url{http://en.wikipedia.org/wiki/GNU_gettext}.
+

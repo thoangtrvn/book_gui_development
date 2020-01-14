@@ -1,0 +1,414 @@
+\chapter{GNOME}
+\label{sec:GNOME}
+\label{chap:GNOME}
+
+GNOME is a desktop environment and GUI that runs on top of an OS. It's free and
+an alternate choice to KDE (as KDE use Qt a commercial product). GNOME was
+created in 1997, using {\bf GTK+} widget toolkit.  GNOME = GNU Network Object
+Model Environment. GTK+ reduces the amount of work when porting one application
+to other platforms (Windows, Mac OS X, etc.).
+
+
+\section{GNOME 1 and GNOME 2}
+\label{sec:GNOME-1}
+\label{sec:GNOME-2}
+
+GNOME 1 use Nautilus as default file manager (Sect.\ref{sec:nautilus}).
+Nautilus is  equivalent to Windows Explorer in Windows.
+
+GNOME 2 use Metacity as default window manager.
+Metacity is the Window manager that deals with the behavior of a Window like
+maximize, minimize, close, resize, move.
+
+In GNOME 1 and 2, GNOME was designed based on traditional desktop metaphor, i.e.
+users can change the looking of the desktop by using different themes (which
+usually contains ions, window manager border). 
+
+
+
+\section{Cinnamon}
+\label{sec:Cinnamon}
+
+Cinnamon is a desktop environment based on GNOME 3 (Sect.\ref{sec:GNOME-3})
+
+As GNOME Shell is far away different from GNOME 2-like user interface, some
+efforts have been made to keep GNOME2 layout on top of GNOME Shell. One of that
+is {\bf Cinnamon Shell} (Linux Mint distro), which use GNOME Shell (Mutter and
+GTK+ 3).
+
+In Cinnamon Shell, window manager is {\bf Muffin}, a fork of Mutter. In Cinnamon
+1.6, the default file manager is {\bf Nemo} (not Nautilus).
+
+\section{GNOME 3}
+\label{sec:GNOME-3}
+
+Gnome 3 is the third iteration in the Gnome desktop environment. t features a
+bar at the top with a clock and a menu button on the left which will bring up a
+fullscreen window containing most applications. 
+
+The default theme is rather dark with much black in the general elements, but
+the windows are light gray. 
+
+
+Since GNOME 3, there are many changes that makes it looks similar to Mac OS X
+\begin{enumerate}
+  \item maximize and minimize button are no longer on the title bar (default)
+  
+  \item Mutter replaces Metacity as window manager. Mutter is a {\it
+  compositing window manager} which allows rendering layout better and faster.
+  
+  \item GNOME Shell - Sect.\ref{sec:GNOME-Shell} (only works with Mutter)
+  replaces GNOME Panel.
+  
+\end{enumerate}
+% Since GNOME 3, it uses {\bf GNOME Shell} (rather than traditional desktop
+% metaphor like Nautilus or Metacity) - Sect.\ref{sec:GNOME-Shell}.
+
+\subsection{GNOME Desktop}
+\label{sec:GNOME-desktop}
+
+GNOME Desktop on the other hand has lot more than GNOME Shell
+(Sect.\ref{sec:GNOME-Shell}). Think of GNOME Desktop as a super set of GNOME
+shell; by having also various Gnome specific applications, packages along with
+gnome-session.
+
+Example: to install GNOME Desktop, you also need to choose the display manager
+(Sect.\ref{sec:Display_manager}), e.g. LightDM - Sect.\ref{sec:LightDM}.
+
+\begin{verbatim}
+// OPTION 1
+sudo apt-get install ubuntu-gnome-desktop
+// and choose lightdm
+// during the installation
+// Ubuntu comes with LightDM as default display manager
+
+// OPTION 2
+// to keep GUI minimal
+// will skip extra tools and apps and will install only basic desktop
+// environment with few supported tools
+sudo apt-get install --no-install-recommends ubuntu-desktop
+\end{verbatim}
+
+
+NOTE: \verb!ubuntu-gnome-desktop! install a full GNOME desktop environment
+(including gnome-shell), along with a few standard applications and
+optimizations for Ubuntu. Check dependencies
+\begin{verbatim}
+apt-cache depends ubuntu-gnome-desktop | grep gnome-shell
+\end{verbatim}
+
+
+\subsection{GNOME Shell (2011+)}
+\label{sec:GNOME-Shell}
+
+GNOME Shell is simply a desktop environment which changes the user interface.
+I would suggest to install GNOME Shell. It will give you a feel of GNOME and you
+can easily remove it as well.
+
+GNOME Shell provides a graphical shell and is a more abstract metaphor where
+switching between different tasks and virtual workspaces takes place in a
+separate area called Overview.
+
+\verb!gnome-shell! will only install the GNOME shell, and its dependencies. In
+contrast to \verb!ubuntu-gnome-desktop! (Sect.\ref{sec:GNOME-desktop}), it won't
+install the package gnome-session (among others) automatically, which you need
+to actually use the GNOME desktop.
+\begin{verbatim}
+sudo apt-get install gnome-shell
+
+//remove
+sudo apt-get remove gnome-shell
+\end{verbatim}
+GNOME Shell is written in C and JavaScript as a plugin for Mutter.
+\url{https://en.wikipedia.org/wiki/GNOME_Shell}
+
+
+\subsection{Gnome 3.10 with Ubuntu 14.04}
+\label{sec:GNOME-3.10}
+
+In an earlier message by Sebastien Bacher's (software engineer at Canonical)
+that GTK 3.10 deprecates several options, and thus Ubuntu 14.04 LTS decided to
+use Gnome 3.8
+\url{http://www.webupd8.org/2013/10/ubuntu-1404-lts-to-stay-on-gtkgnome-38.html}
+
+Later on, however, Ubuntu 14.04 uses GTK 3.10
+\url{http://www.webupd8.org/2013/12/gtk-310-lands-in-ubuntu-1404-trusty-tahr.html}
+\url{http://www.webupd8.org/2014/01/gnome-shell-310-lands-in-ubuntu-1404.html}
+
+GNOME 3.10 has
+\begin{enumerate}
+  \item  initial Wayland support, 
+  
+  \item header bars (client side decorations): it uses the GTK+ toolkit and
+  theme engine
+  
+  \item a new  system menu for GNOME Shell which combines the previous system status menus
+  and of course, updated core GNOME apps as well as some new applications.  
+
+  the old system status menus have been replaced with a new System Menu: 
+
+  \item new core apps: 
+  Bijiben, a note taking app, GNOME Weather and GNOME photos
+  
+  \item change in existing core apps:
+  
+\begin{verbatim}
+Web: DuckDuck go is now the default search engine; Web now has a search provider
+for GNOME Shell which allows accessing your web history or searching the web
+from the GNOME Shell Activities  
+
+Contacts: UI enhancements, updated setup and accounts dialogs
+
+Tweak Tool: redesigned for GNOME 3.10 and includes new options, such as startup
+applications management, etc.  
+
+Evince Document Viewer: improved accessibility, new Caret Navigation mode,
+improved Djvu support and a new sidebar showing search results  
+
+Clocks: Pretty new analog timer in stopwatch and timer views as well as
+geolocation support 
+
+Boxes: support for importing system images (QEMU, raw, vdi - Virtualbox 1.1
+image format, vmdk - VMware 3 and 4, vpc and cloop) as well as many UI and other fixes 
+\end{verbatim}
+  
+\end{enumerate}
+\url{http://www.webupd8.org/2013/09/see-whats-new-in-gnome-310-video.html}
+
+\subsection{Gnome 3.12+ issues with Ubuntu 14.04}
+\label{sec:GNOME-3.12}
+
+Ubuntu 14.04 uses Gnome 3.10.  However, after Gnome 3.10, e.g. Gnome 3.12+,
+there happened huge differences on Gnome side, it's not compatible with current
+Ubuntu. Even compiz won't work properly. Ubuntu team patches Gnome to use it.
+\url{https://askubuntu.com/questions/497955/how-do-you-update-gtk-and-or-gnome-on-ubuntu-14-04-lts}
+
+If you want to upgrade, follow the steps
+\url{https://wiki.ubuntu.com/UbuntuGNOME/HowTo/UpgradeGnomeShell}
+
+\url{https://launchpad.net/~gnome3-team/+archive/ubuntu/gnome3-staging/+index?batch=75&direction=backwards&memo=225&start=150}
+\begin{verbatim}
+// GNOME 3.12 in Ubuntu 14.04
+
+//remove first
+ppa-purge gnome3-team/gnome3-staging
+ppa-purge gnome3-team/gnome3
+
+// then
+sudo add-apt-repository ppa:gnome3-team/gnome3-staging
+sudo add-apt-repository ppa:gnome3-team/gnome3
+sudo apt-get update
+
+  // if already have GNOME
+  // also choose a Display Manager, e.g. GDM or LightDM
+sudo apt dist-upgrade
+ // if not, install GNOME
+sudo apt-get install gnome gnome-shell
+\end{verbatim}
+
+If you're going GNOME-only then GDM is fine. But if you plan to switch between
+GNOME and other DEs I recommend sticking with LightDM.
+
+
+GNOME 3.12 has
+\begin{enumerate}
+  \item full Wayland support - Sect.\ref{sec:Wayland},
+  
+  \item introduce a Sound Recorder preview release, 
+  
+  \item Systemd for the user session, 
+  
+  \item colour tinting in GNOME Shell, 
+  
+  \item videos application implementation, support for Facebook in GNOME photos,
+  integrate Zimbra in GNOME, Git integration in the developer experience as well
+  as ratings, screenshots and history support in GNOME Software.
+\end{enumerate}
+
+
+\chapter{Ubuntu}
+
+Ubuntu is based on Debian distro (Sect.\ref{sec:Debian}).
+
+\section{Debian vs. Ubuntu}
+\label{sec:Debian}
+
+Check Debian version in Ubuntu
+\begin{verbatim}
+cat /etc/debian_version
+\end{verbatim}
+\url{https://askubuntu.com/questions/445487/what-debian-version-are-the-different-ubuntu-versions-based-on}
+
+\subsection{Debian vs. Ubuntu versions}
+\label{sec:Debian-versions}
+
+The following lines give a mapping from Ubuntu version to Debian version.
+
+sid is the development distribution of Debian (sid - testing - stable)
+\begin{verbatim}
+18.04  bionic     buster  / sid
+17.10  artful     stretch / sid
+17.04  zesty      stretch / sid
+16.10  yakkety    stretch / sid
+16.04  xenial     stretch / sid
+15.10  wily       jessie  / sid
+15.04  vivid      jessie  / sid
+14.10  utopic     jessie  / sid
+14.04  trusty     jessie  / sid
+13.10  saucy      wheezy  / sid
+13.04  raring     wheezy  / sid
+12.10  quantal    wheezy  / sid
+12.04  precise    wheezy  / sid
+11.10  oneiric    wheezy  / sid
+11.04  natty      squeeze / sid
+10.10  maverick   squeeze / sid
+10.04  lucid      squeeze / sid
+\end{verbatim}
+
+Ubuntu is often ahead of Debian on core packages like libc6. Trying to install a
+package built on Ubuntu on a contemporary version of Debian is likely to end up
+with version errors on libc6.
+
+% Debian version on which your Ubuntu version is based in the file:
+% \verb!/etc/debian_version!
+
+% \begin{verbatim}
+% 17.10  artful     stretch / sid
+% 17.04  zesty      stretch / sid
+% 16.10  yakkety    stretch / sid
+% 16.04  xenial     stretch / sid
+% 15.10  wily       jessie  / sid
+% 15.04  vivid      jessie  / sid
+% 14.10  utopic     jessie  / sid
+% 14.04  trusty     jessie  / sid
+% 13.10  saucy      wheezy  / sid
+% 13.04  raring     wheezy  / sid
+% 12.10  quantal    wheezy  / sid
+% 12.04  precise    wheezy  / sid
+% 11.10  oneiric    wheezy  / sid
+% 11.04  natty      squeeze / sid
+% 10.10  maverick   squeeze / sid
+% 10.04  lucid      squeeze / sid
+% \end{verbatim}
+% NOTE: sid is the development distribution of Debian (sid - testing - stable)
+
+% Debian version
+% \begin{verbatim}
+% Debian 9 (stretch)
+% 
+% Debian 8 (jessie) 
+% 
+% Debian 7 (wheezy) 
+% \end{verbatim}
+\url{https://www.debian.org/releases/}
+
+\subsection{Debian 9 (stretch)}
+\label{sec:Debian-stretch}
+
+Uses
+\begin{verbatim}
+Linux kernel 4.9 LTS
+apt 1.4.6
+gcc 6.3
+
+libc version 2.24-11
+
+Gnome 3.22 
+KDE Plasma 5.8 LTS
+Xfce 4.12
+
+Database: MariaDB 10.1 (a MySQL variant)
+      to replace MySQL 5.5 or 5.6
+
+systemd version 232  
+\end{verbatim}
+
+\url{https://www.debian.org/News/2017/20170617}
+\section{debuild vs. dpkg-buildpackage}
+\label{sec:dkpg-buildpackage}
+
+debuild and dpkg-buildpackage initialize the environment variable  CFLAGS to a
+certain value.
+
+\subsection{clean code for clean build}
+
+As the \verb!debian/rules! file actually calls a Makefile, then this Makefile
+should have a \verb!clean! target:
+\begin{verbatim}
+make clean
+\end{verbatim}
+
+or
+\begin{verbatim}
+dpkg-buildpackage -rfakeroot -Tclean
+\end{verbatim}
+
+\subsection{debuild}
+\label{sec:debuild}
+
+debuild is a convenient wrapper around dpkg-buildpackage, fakeroot, lintian, and
+debsign. It handles all the packaging linting, and signing for us.
+
+debuild will make use of symlinks in it's build process, so if you are using a
+Virtualbox or VMware Shared folder to build your package, it will not work.
+
+NOTE: debuild and dpkg-buildpackage initialize the environment variable  CFLAGS to a
+certain value.
+
+REQUIREMENTS:
+\begin{enumerate}
+  \item a \verb!debian/! folder
+  
+  where all of our debian specific packaging files will go.
+  
+  \item a \verb!debian/control! file
+  
+  Example: it describes your package using debian control fields. 
+  \begin{verbatim}
+  Source: helloworld  
+Maintainer: Julio Capote <julio@packagecloud.io>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.3
+Section: utils
+
+Package: helloworld  
+Priority: extra  
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}  
+Description: a simple helloworld package
+ Just prints "Hi", it's very useful.
+  \end{verbatim}
+  
+  \item a \verb!debian/changelog! file
+  
+  This file tracks all the changes to the package. You need a minimum of one
+  entry to build a package.
+  
+  The syntax of this file is tricky, and it is recommended to use
+  \verb!debchange! utility (or dch) to create this file.
+  \begin{verbatim}
+  dch -i -create
+  \end{verbatim}
+  
+  Make sure you change UNRELEASED to unstable
+  
+  \item a \verb!debian/rules! file
+  
+  This file tells debian specifically how to build your package. The most basic
+    implementation just passes all calls to the original Makefile
+   
+\begin{verbatim}
+#!/usr/bin/make -f  
+%:  
+	dh $@
+\end{verbatim} 
+    
+    \item a \verb!debian/copyright! file
+    
+ It can be empty
+ \begin{verbatim}
+ Copyright 2015, Computology LLC.
+ \end{verbatim}
+\end{enumerate}
+
+

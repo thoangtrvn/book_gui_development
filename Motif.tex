@@ -1,0 +1,129 @@
+\chapter{Motif (aka OSF/Motif)}
+\label{chap:Motif}
+\label{chap:osfmotif}
+
+Motif (sometimes called OSF/Motif) is industry-standard to design 2D interface.
+We can combine with OpenGL for writing 3D application in which the 2D Window is
+created by either OSF/Motif drawing area widgets or OpenGL-specific drawing area
+widgets. The 3D rendering context then can be bind to this window.
+
+{\bf motif} is an industry standard toolkit/library for building GUI application
+in X windows system since 1980s. Different implementations of the Motif API include Open
+Motif, LessTif. 
+\begin{itemize}
+  \item Open Motif: royalty-free distribution if the software that use Open Motif is open source
+  
+  \item LessTif: created when Motif still priprietary with the goal to bring Motif-compatible implementation to LGPL licensed
+\end{itemize}
+From 2012, Motif is LGPLv2 licensed.
+
+Motif was used to
+\begin{itemize}
+  \item build the GUI for Common Desktop Environment (CDE) - a desktop environment for Unix and OpenVMS O/S
+  
+  \url{http://en.wikipedia.org/wiki/Common_Desktop_Environment}
+  
+  
+\end{itemize}  
+
+
+To download motif: \url{motif.ics.com/motif/downloads}
+
+\section{Versions}
+
+
+Since Motif 2.1, it supports
+\begin{itemize}
+  \item Unicode
+\end{itemize}
+
+
+\url{http://bwachter.lart.info/documentation/guitoolkits.html}
+
+
+Motif allows theme creation, but it is not as easy to do as GTK+ (Chap.\ref{chap:GTK+}). One has to
+create a long and complex resources file to change the look and feel of Motif
+programs. GTK+ users can have this functionality much more easily.
+
+\section{Motif terms}
+\label{sec:Motif_terms}
+
+A shell widget acts as the top-level window of the application and handles the
+application's interaction with the window manager
+
+Application context
+\begin{verbatim}
+XtAppContext     app;
+\end{verbatim}
+is a structure that Xt uses to manage some internal data associated with an
+application. Most often, an application receives an opaque pointer to an application context
+in the toolkit initialization call and merely passes that pointer to a few other toolkit functions that require it as an argument. 
+
+Even the application context is not being used in most application, the fact
+that the application context is a public variable, rather than hidden in the
+toolkit internals, is a forward-looking feature of Xt, designed to support
+multiple threads of control.
+
+\section{Xm library}
+\label{sec:Xm}
+
+The widget set for Motif is implemented in the Xm library
+\begin{verbatim}
+-lXm
+\end{verbatim}
+Xm relies on Xt library (Sect.\ref{sec:Xt}).
+
+The header files in \verb!/usr/Motif2.1/include/Xm!
+\begin{verbatim}
+#include <X11/Intrinsic.h>
+#include <X11/Shell.h>
+#include <X11/Xatom.h>
+#include <Xm/XmStrDefs.h>
+#include <Xm/VirtKeys.h>
+
+#include <Xm/PushB.h>  // PushButton widget
+\end{verbatim} 
+The one with the name ending in a "P" (e.g. PushBP.h) is the widget's private
+header file and should not normally be included directly by an application.
+Private header files are generally used only by the code that implements a
+widget class and its subclasses.
+
+NOTE: \verb!<Xm/XmAll.h>! header file simply includes all of the public
+header files.
+
+\subsection{Localization (internalization)}
+
+\begin{verbatim}
+XtSetLanguageProc (NULL, NULL, NULL);
+\end{verbatim}
+\url{http://www.ist.co.uk/motif/books/vol6A/ch-2.fm.html}
+
+\section{How to write a GUI app}
+
+Before an application creates any widgets, it must initialize the toolkit
+\begin{itemize}
+  \item \verb!XtVaAppInitialize()! (deprecated)
+  \item \verb!XtVaOpenApplication()!
+\end{itemize}
+Example:
+\begin{verbatim}
+Widget           toplevel;
+XtAppContext     app;
+toplevel = XtVaOpenApplication (&app, "Hello", NULL, 0, &argc, argv, NULL,
+                                sessionShellWidgetClass, NULL);    
+\end{verbatim}
+which returns a shell widget (Sect.\ref{sec:Motif_terms})
+
+
+\section{Compile a Motif-based GUI program}
+
+\begin{verbatim}
+cc -O -o filename filename.c -lXm -lXt -lX11
+\end{verbatim}
+The order is important as Xm relies on Xt, and both Xm and Xt rely on Xlib (the -lX11 link flag specifies
+Xlib).
+
+
+\section{Tutorial}
+
+\url{http://www.ist.co.uk/motif/books/vol6A/ch-2.fm.html}
